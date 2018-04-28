@@ -18,8 +18,8 @@ class CardTableSeeder extends Seeder
         $values[] = 'jack';
         $values[] = 'queen';
         $values[] = 'king';
-        $values[] = 'ace';
-
+        array_unshift($values, 'ace');
+        
         foreach($suits as $suit) {
             foreach($values as $value) {
                 Card::create([

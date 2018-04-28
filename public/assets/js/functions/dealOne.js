@@ -1,14 +1,11 @@
 'use strict';
 
 define([], function () {
-    return function (deck, $card_div, cardPosition, num_cards_pulled) {
+    return function (deck, $card_div, data_card_index, num_cards_pulled) {
         var div_position = $card_div.position();
         var width = $card_div.width();
-
-        var cardDiv = $('*[data-card-position="' + cardPosition + '"]');
-        var index = cardDiv.data('index');
-
-        var card = deck.cards[cardPosition];
+        console.log('Dealing card (should match log): ' + data_card_index);
+        var card = deck.cards[data_card_index - 1];
         card.animateTo({
             delay: 500,
             duration: 300,
