@@ -35,8 +35,6 @@ gulp.task('move-js', function () {
 
 gulp.task('minify', function () {
 
-    gulp.src('public/assets/fonts/**/*').pipe(gulp.dest('public/dist/fonts'));
-    gulp.src('public/assets/fonts/**/*').pipe(gulp.dest('public/build/dist/fonts'));
     gulp.src(['public/assets/css/vendor/*.css', 'public/assets/css/main.css'])
         .pipe(sourcemaps.init())
         .pipe(cleanCSS())
@@ -48,7 +46,6 @@ gulp.task('minify', function () {
 
 gulp.task('sass', function () {
 
-    gulp.src('resources/assets/fonts/**/*').pipe(gulp.dest('public/assets/fonts'));
     return gulp.src('resources/assets/sass/**/*.scss')
         .pipe(sourcemaps.init())
         .pipe(sass().on('error', sass.logError))
