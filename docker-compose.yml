@@ -1,0 +1,149 @@
+version: '2'
+
+services:
+
+### Workspace Utilities Container ###########################
+
+  workspace:
+    build:
+      context: docker/workspace
+    volumes_from:
+      - volumes_source
+    tty: true
+    links:
+      - selenium
+    networks:
+      local:
+        aliases:
+          - workspace
+
+### PHP-FPM Container #######################################
+
+  php-fpm:
+    build: docker/php-fpm
+    volumes_from:
+      - volumes_source
+    expose:
+      - "9000"
+    links:
+      - workspace
+    environment:
+      XDEBUG_CONFIG: remote_host=10.254.254.254 remote_port=${CONTAINER_XDEBUG_PORT_9000X}
+    networks:
+      - local
+
+### Nginx Server Container ##################################
+
+  nginx:
+    build:
+      context: docker/nginx
+      args:
+        - SITE_DOMAIN
+        - TEST_DOMAIN
+    volumes_from:
+      - volumes_source
+    ports:
+      - "${CONTAINER_NGINX_PORT_80X}:80"
+    links:
+      - php-fpm
+    networks:
+      local:
+        aliases:
+          - "${TEST_DOMAIN}"
+          - "${SITE_DOMAIN}"
+
+### MySQL Container #########################################
+
+  mysql:
+    build: docker/mysql
+    volumes_from:
+      - volumes_data
+    ports:
+      - "${CONTAINER_MYSQL_PORT_3306X}:${DB_PORT}"
+    environment:
+      MYSQL_DATABASE: ${DB_DATABASE}
+      MYSQL_USER: ${DB_USERNAME}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+    links:
+      - workspace
+    networks:
+      - local
+
+### Redis Container #########################################
+  redis:
+    build: docker/redis
+    volumes_from:
+      - volumes_data
+    ports:
+      - ${REDIS_PORT}
+    networks:
+      - local
+
+### Selenium Container #####################################
+
+  selenium:
+    build: docker/selenium
+    volumes_from:
+      - volumes_source
+    expose:
+      - "4444"
+    networks:
+      local:
+        aliases:
+          - selenium
+
+### Other Tools
+  composer:
+    image: composer/composer
+    volumes:
+      - ./:/app
+      - ~/.ssh:/root/.ssh
+      - ~/.composer:/root/.composer
+
+  node:
+    build: docker/node
+    volumes_from:
+      - volumes_source
+
+  socketio:
+    build: docker/socketio
+    restart: always
+    links:
+      - redis
+    ports:
+      - "${CONTAINER_SOCKETIO_PORT_600X}:6001"
+    volumes:
+      - ./socket.js:/srv/app.js
+      - ./.env:/srv/.env
+      - ./node_modules:/srv/node_modules
+      - ./docker/logs/socketio:/srv/logs
+    networks:
+      - local
+
+### Laravel Application Code Container ######################
+
+  volumes_source:
+    image: tianon/true
+    volumes:
+      - ./:/var/www
+      - ~/.ssh:/root/.ssh
+    networks:
+      - local
+
+### Databases Data Container ################################
+
+  volumes_data:
+    image: tianon/true
+    volumes:
+      - ./docker/data/mysql:/var/lib/mysql
+      - ./docker/data/redis:/data
+      - ./docker/data/sessions:/sessions
+      - ./docker/data/nginx:/var/log/nginx
+    networks:
+      - local
+
+### Add more Containers below ###############################
+
+networks:
+  local:

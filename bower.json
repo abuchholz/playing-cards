@@ -1,0 +1,23 @@
+{
+  "name": "playing-cards",
+  "version": "1.0.0",
+  "authors": [
+    "Alex Buchholz <abuch06@gmail.com>"
+  ],
+  "description": "Playing Cards",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "tests"
+  ],
+  "dependencies": {
+    "bootstrap": "~3.1.1",
+    "jquery": "~2.1.1",
+    "jquery-md5": "*",
+    "jquery-ui": "~1.10.4",
+    "jquery-validation": "1.13.1",
+    "requirejs": "~2.1.22"
+  }
+}

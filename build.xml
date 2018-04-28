@@ -1,0 +1,263 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="Playing Cards" basedir=".">
+
+    <!-- ******************* Main functions ******************* -->
+    <target name="docker">
+        <antcall target="docker-build"> </antcall>
+        <antcall target="docker-boot"> </antcall>
+    </target>
+    <target name="init">
+        <antcall target="permissions"/>
+        <antcall target="composer"> </antcall>
+        <antcall target="yarn"> </antcall>
+        <antcall target="generate-key"> </antcall>
+        <antcall target="database"> </antcall>
+    </target>
+    <target name="tests">
+        <echo message="Running tests"/>
+        <antcall target="redump-test-database"> </antcall>
+        <antcall target="codecept"> </antcall>
+    </target>
+
+    <!-- ******************* Project initialization ******************* -->
+    <target name="docker-build">
+        <echo message="Docker: Composing containers"/>
+        <exec executable="docker-compose" failonerror="true">
+            <arg value="build"/>
+            <arg value="--force-rm"/>
+        </exec>
+    </target>
+    <target name="docker-down">
+        <echo message="Docker: Shutting down containers"/>
+        <exec executable="docker-compose" failonerror="true">
+            <arg value="down"/>
+            <arg value="--remove-orphans"/>
+        </exec>
+    </target>
+    <target name="docker-boot">
+        <echo message="Docker: Booting containers"/>
+        <exec executable="docker-compose" failonerror="true">
+            <arg value="up"/>
+            <arg value="-d"/>
+        </exec>
+    </target>
+
+
+    <target name="composer">
+        <echo message="Composer install"/>
+        <run container="composer" workdir="/app" line="install --no-interaction --optimize-autoloader"/>
+    </target>
+    <target name="composer-update">
+        <echo message="Composer update"/>
+        <run container="composer" workdir="/app" line="update"/>
+    </target>
+
+    <target name="yarn">
+        <echo message="Yarn installing npm packages"/>
+        <run container="node" workdir="/var/www" line="bash -c 'yarn'"/>
+    </target>
+    <target name="gulp">
+        <echo message="Yarn installing npm packages"/>
+        <run container="node" workdir="/var/www" line="bash -c 'gulp'"/>
+    </target>
+    <target name="gulp-watch">
+        <echo message="Yarn installing npm packages"/>
+        <run container="node" workdir="/var/www" line="bash -c 'gulp watch'"/>
+    </target>
+    <target name="generate-key">
+        <echo message="Create Application Key"/>
+        <ws runas="laradock" line="php artisan key:generate"/>
+        <ws runas="laradock" line="php artisan key:generate --env=testing"/>
+    </target>
+    <target name="database">
+        <echo message="Migrating and seeding database"/>
+        <ws runas="laradock" line="php artisan migrate:refresh --seed --force"/>
+    </target>
+    <target name="permissions">
+        <exec executable="chmod" failonerror="true">
+            <arg value="-R"/>
+            <arg value="777"/>
+            <arg value="storage/logs"/>
+        </exec>
+    </target>
+
+    <!-- ******************* Testing ******************* -->
+    <target name="codecept">
+        <ws line="codecept run --coverage --coverage-html --coverage-xml"/>
+    </target>
+    <target name="redump-test-database">
+        <antcall target="recreate-test-database"> </antcall>
+        <antcall target="dump-test-database"> </antcall>
+    </target>
+    <target name="recreate-test-database">
+        <ws line="php tests/_support/Scripts/recreate_test_database.php"/>
+    </target>
+    <target name="dump-test-database">
+        <ws line="php tests/_support/Scripts/dump_test_database.php"/>
+    </target>
+
+    <!-- ******************* Static Code Checks ******************* -->
+    <!--Taken from http://jenkins-php.org/download/build.xml -->
+    <target name="build" depends="prepare,lint,phploc-ci,pdepend,phpmd-ci,phpcs-ci,phpcpd-ci" description=""/>
+    <target name="build-parallel" depends="prepare,lint,tools-parallel" description=""/>
+    <target name="tools-parallel" description="Run tools in parallel">
+        <parallel threadCount="2">
+            <sequential>
+                <antcall target="pdepend"/>
+                <antcall target="phpmd-ci"/>
+            </sequential>
+            <antcall target="phpcpd-ci"/>
+            <antcall target="phpcs-ci"/>
+            <antcall target="phploc-ci"/>
+        </parallel>
+    </target>
+    <target name="clean" unless="clean.done" description="Cleanup build artifacts">
+        <delete dir="${basedir}/build/api"/>
+        <delete dir="${basedir}/build/coverage"/>
+        <delete dir="${basedir}/build/logs"/>
+        <delete dir="${basedir}/build/pdepend"/>
+        <property name="clean.done" value="true"/>
+    </target>
+    <target name="prepare" unless="prepare.done" depends="clean" description="Prepare for build">
+        <mkdir dir="${basedir}/build/api"/>
+        <mkdir dir="${basedir}/build/coverage"/>
+        <mkdir dir="${basedir}/build/logs"/>
+        <mkdir dir="${basedir}/build/pdepend"/>
+        <property name="prepare.done" value="true"/>
+    </target>
+    <property name="toolsdir" value="${basedir}/vendor/bin/"/>
+
+    <target name="lint" unless="lint.done" description="Perform syntax check of sourcecode files">
+        <apply executable="php" failonerror="true" taskname="lint">
+            <arg value="-l"/>
+            <fileset dir="${basedir}/app">
+                <include name="**/*.php"/>
+                <modified/>
+            </fileset>
+        </apply>
+        <property name="lint.done" value="true"/>
+    </target>
+    <target name="phploc-ci"
+            description="Measure project size using PHPLOC and log result in CSV and XML format. Intended for usage within a continuous integration environment.">
+        <exec executable="vendor/bin/phploc">
+            <arg value="--count-tests"/>
+            <arg value="--log-csv"/>
+            <arg path="${basedir}/build/logs/phploc.csv"/>
+            <arg value="--log-xml"/>
+            <arg path="${basedir}/build/logs/phploc.xml"/>
+            <arg path="${basedir}/app/*"/>
+            <arg path="${basedir}/app/tests"/>
+        </exec>
+    </target>
+    <target name="pdepend" unless="pdepend.done" depends="prepare"
+            description="Calculate software metrics using PHP_Depend and log result in XML format. Intended for usage within a continuous integration environment.">
+        <exec executable="${toolsdir}pdepend" taskname="pdepend">
+            <arg value="--jdepend-xml=${basedir}/build/logs/jdepend.xml"/>
+            <arg value="--jdepend-chart=${basedir}/build/pdepend/dependencies.svg"/>
+            <arg value="--overview-pyramid=${basedir}/build/pdepend/overview-pyramid.svg"/>
+            <arg path="${basedir}/app"/>
+        </exec>
+        <property name="pdepend.done" value="true"/>
+    </target>
+    <target name="phpmd" unless="phpmd.done"
+            description="Perform project mess detection using PHPMD and print human readable output. Intended for usage on the command line before committing.">
+        <exec executable="${toolsdir}phpmd" taskname="phpmd">
+            <arg path="${basedir}/app"/>
+            <arg value="text"/>
+            <arg path="${basedir}/build/phpmd.xml"/>
+        </exec>
+        <property name="phpmd.done" value="true"/>
+    </target>
+    <target name="phpmd-ci" unless="phpmd.done" depends="prepare"
+            description="Perform project mess detection using PHPMD and log result in XML format. Intended for usage within a continuous integration environment.">
+        <exec executable="${toolsdir}phpmd" taskname="phpmd">
+            <arg path="${basedir}/app"/>
+            <arg value="xml"/>
+            <arg path="${basedir}/build/phpmd.xml"/>
+            <arg value="--reportfile"/>
+            <arg path="${basedir}/build/logs/pmd.xml"/>
+        </exec>
+        <property name="phpmd.done" value="true"/>
+    </target>
+    <target name="phpcs" unless="phpcs.done"
+            description="Find coding standard violations using PHP_CodeSniffer and print human readable output. Intended for usage on the command line before committing.">
+        <exec executable="${toolsdir}phpcs" taskname="phpcs">
+            <arg value="--standard=PSR2"/>
+            <arg value="--extensions=php"/>
+            <arg value="--ignore=autoload.php"/>
+            <arg value="--ignore=${basedir}/app/database"/>
+            <arg path="${basedir}/app"/>
+            <arg path="${basedir}/app/tests"/>
+        </exec>
+        <property name="phpcs.done" value="true"/>
+    </target>
+    <target name="phpcs-ci" unless="phpcs.done" depends="prepare"
+            description="Find coding standard violations using PHP_CodeSniffer and log result in XML format. Intended for usage within a continuous integration environment.">
+        <exec executable="${toolsdir}phpcs" output="/dev/null" taskname="phpcs">
+            <arg value="--report=checkstyle"/>
+            <arg value="--report-file=${basedir}/build/logs/checkstyle.xml"/>
+            <arg value="--standard=PSR2"/>
+            <arg value="--extensions=php"/>
+            <arg value="--ignore=autoload.php"/>
+            <arg path="${basedir}/app"/>
+        </exec>
+        <property name="phpcs.done" value="true"/>
+    </target>
+    <target name="phpcpd" unless="phpcpd.done"
+            description="Find duplicate code using PHPCPD and print human readable output. Intended for usage on the command line before committing.">
+        <exec executable="${toolsdir}phpcpd" taskname="phpcpd">
+            <arg path="${basedir}/app"/>
+        </exec>
+        <property name="phpcpd.done" value="true"/>
+    </target>
+    <target name="phpcpd-ci" unless="phpcpd.done" depends="prepare"
+            description="Find duplicate code using PHPCPD and log result in XML format. Intended for usage within a continuous integration environment.">
+        <exec executable="${toolsdir}phpcpd" taskname="phpcpd">
+            <arg value="--log-pmd"/>
+            <arg path="${basedir}/build/logs/pmd-cpd.xml"/>
+            <arg path="${basedir}/app"/>
+        </exec>
+        <property name="phpcpd.done" value="true"/>
+    </target>
+    <target name="phpcbf"
+            description="Using the PHP Code Beautifier and Fixer. Intended for usage on the command line before committing.">
+        <exec executable="${toolsdir}phpcbf" taskname="phpcbf">
+            <arg path="${basedir}/app"/>
+            <arg value="--standard=PSR2"/>
+            <arg value="--ignore=autoload.php"/>
+            <arg value="--ignore=${basedir}/app/database"/>
+        </exec>
+    </target>
+
+    <!-- ******************* Ant Command Templates ******************* -->
+    <macrodef name="ws">
+        <attribute name="runas" default="root"/>
+        <attribute name="line"/>
+        <sequential>
+            <exec executable="docker-compose" failonerror="true">
+                <arg value="exec"/>
+                <arg value="-T"/>
+                <arg value="--user"/>
+                <arg value="@{runas}"/>
+                <arg value="workspace"/>
+                <arg line="@{line}"/>
+            </exec>
+        </sequential>
+    </macrodef>
+    <macrodef name="run">
+        <attribute name="container"/>
+        <attribute name="workdir" default="/"/>
+        <attribute name="line"/>
+        <sequential>
+            <exec executable="docker-compose" failonerror="true">
+                <arg value="run"/>
+                <arg value="-w"/>
+                <arg value="@{workdir}"/>
+                <arg value="--rm"/>
+                <arg value="@{container}"/>
+                <arg line="@{line}"/>
+            </exec>
+        </sequential>
+    </macrodef>
+
+</project>

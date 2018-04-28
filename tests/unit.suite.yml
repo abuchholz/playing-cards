@@ -1,0 +1,12 @@
+
+class_name: UnitTester
+modules:
+    enabled:
+        - Asserts
+        - \Helper\Unit
+        - Laravel5:
+            part: ORM
+            environment_file: .env.testing
+            url: 'http://%TEST_DOMAIN%'
+coverage:
+    enabled: true

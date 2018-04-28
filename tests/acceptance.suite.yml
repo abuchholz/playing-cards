@@ -1,0 +1,13 @@
+
+class_name: AcceptanceTester
+modules:
+    enabled:
+        - WebDriver:
+            url: 'http://%TEST_DOMAIN%:80'
+            browser: firefox
+            host: selenium
+        - \Helper\Acceptance
+coverage:
+    remote: true
+    enabled: true
+    c3_url: 'http://%TEST_DOMAIN%:80'

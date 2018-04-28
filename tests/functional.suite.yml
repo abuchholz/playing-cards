@@ -1,0 +1,11 @@
+
+class_name: FunctionalTester
+modules:
+    enabled:
+        - Laravel5:
+            url: 'http://%TEST_DOMAIN%:80'
+        - \Helper\Functional
+coverage:
+    enabled: true
+    c3_url: 'http://%TEST_DOMAIN%:80'
+

@@ -1,0 +1,36 @@
+actor: Tester
+paths:
+    tests: tests
+    log: tests/_output
+    data: tests/_data
+    support: tests/_support
+    envs: tests/_envs
+settings:
+    bootstrap: _bootstrap.php
+    colors: true
+    memory_limit: 2048M
+extensions:
+    enabled:
+        - Codeception\Extension\RunFailed
+        - Codeception\Extension\Recorder
+params:
+    - .env.testing
+coverage:
+    enabled: true
+    whitelist:
+        include:
+            - app/*
+        exclude:
+            - app/Console/*
+    remote_context_options:
+        http:
+            timeout: 60
+modules:
+    enabled:
+        - Db:
+            dsn: "mysql:host=%DB_HOST%;dbname=%DB_DATABASE%"
+            user: "%DB_USERNAME%"
+            password: "%DB_PASSWORD%"
+            dump: tests/_data/dump.sql
+            populate: true
+            cleanup: true
