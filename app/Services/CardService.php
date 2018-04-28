@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Card;
+use App\Exceptions\NoMoreCards as NoMoreCardsException;
 use Illuminate\Cache\Repository;
 
 class CardService
@@ -33,19 +34,21 @@ class CardService
         \Log::debug($cardIds);
         $this->storeCardIdsInCache($cardIds);
     }
-    
+
     /**
      * Deals one card off the top of the deck
      *
      * @return Card
+     * @throws NoMoreCardsException
      */
     public function dealOneCard()
     {
         $cardIds = $this->getCardIdsInCache();
+        if (empty($cardIds)) {
+            throw new NoMoreCardsException();
+        }
         $id = array_shift($cardIds);
-        /** @var Card $card */
         $card = Card::find($id);
-        \Log::debug($card->id . ': ' . $card->readable);
 
         $this->storeCardIdsInCache($cardIds);
 

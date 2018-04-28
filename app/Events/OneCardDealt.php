@@ -21,6 +21,7 @@ class OneCardDealt extends Event implements ShouldBroadcast
     public function __construct(Card $card)
     {
         $this->card = $card;
+        // TODO: what happens when there are no cards left??
     }
 
     public function broadcastOn()

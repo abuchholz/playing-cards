@@ -1,5 +1,6 @@
 <?php
 
+use App\Exceptions\NoMoreCards;
 use Codeception\TestCase\Test;
 use Illuminate\Cache\Repository;
 use App\Services\CardService;
@@ -33,7 +34,7 @@ class CardServiceTest extends Test
         $this->assertNotEquals(range(1, 52), $idsInCacheAfter);
     }
 
-    public function testDealOneCard()
+    public function testDealCards()
     {
         $cs = new CardService(cache()->store());
 
@@ -53,6 +54,8 @@ class CardServiceTest extends Test
         for ($i = 0; $i < 52; $i++) {
             $this->assertContains($idsInCache[$i], $idsDealt);
         }
+        $this->expectException(NoMoreCards::class);
+        $cs->dealOneCard();
 
     }
 }
