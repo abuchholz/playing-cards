@@ -114,4 +114,28 @@ class AcceptanceTester extends \Codeception\Actor implements Context
         $this->seeCurrentUrlEquals('/');
     }
 
+    /**
+     * @Then I see a certain card
+     */
+    public function iSeeACertainCard()
+    {
+        $card = $this->seeElement('.card > .face');
+
+        dd($card);
+
+    }
+
+    /**
+     * @Then I see a different card
+     */
+    public function iSeeADifferentCard()
+    {
+        $card = $this->seeElement('.card > .face');
+
+        dd($card);
+
+    }
+
+
+
 }

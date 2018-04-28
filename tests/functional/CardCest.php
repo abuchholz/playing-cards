@@ -1,30 +1,44 @@
 <?php
-use App\User;
-use App\Role;
+
 use App\Card;
+use App\Services\CardService;
 
 class CardCest
 {
-    private $user;
-
-    public function _before()
-    {
-//        $this->user = factory(User::class)->create();
-//        $this->user->roles()->sync([Role::USER_ROLE_ID]);
-//        factory(Card::class)->create(['user_id' => $this->user->id]);
-    }
 
     public function shuffleSuccessfully(FunctionalTester $I)
     {
-        $I->amOnPage('/');
-//        $I->click('Create New Post');
+        $I->sendAjaxPostRequest('/shuffle');
 
-//        $I->seeCurrentUrlEquals('/post');
-        $I->see('Cards');
+        /** @var CardService $cs */
+        $cs = $I->grabService(CardService::class);
+        $order = $cs->getIds();
+        $I->assertEquals(52, count($order));
+
+        $I->sendAjaxPostRequest('/shuffle');
+        $new_order = $cs->getIds();
+        $I->seeNotEquals($order, $new_order);
+        $I->assertEquals(52, count($new_order));
     }
 
     public function getOneCardSuccessfully(FunctionalTester $I)
     {
+        $I->sendAjaxPostRequest('/shuffle');
+
+        /** @var CardService $cs */
+        $cs = $I->grabService(CardService::class);
+        $order = $cs->getIds();
+        $I->assertEquals(52, count($order));
+
+        $I->sendAjaxPostRequest('/deal-one-card');
+        $new_order = $cs->getIds();
+        $I->seeNotEquals($order, $new_order);
+        $I->assertEquals(51, count($new_order));
+
+        $I->sendAjaxPostRequest('/deal-one-card');
+        $last_order = $cs->getIds();
+        $I->assertEquals(50, count($last_order));
     }
+
 
 }

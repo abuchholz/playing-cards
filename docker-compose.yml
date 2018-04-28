@@ -84,10 +84,12 @@ services:
 
   selenium:
     build: docker/selenium
-    volumes_from:
-      - volumes_source
+    links:
+      - socketio
     expose:
       - "4444"
+    volumes_from:
+      - volumes_source
     networks:
       local:
         aliases:
@@ -112,7 +114,7 @@ services:
     links:
       - redis
     ports:
-      - "${CONTAINER_SOCKETIO_PORT_600X}:6001"
+      - "6001:6001"
     volumes:
       - ./socket.js:/srv/app.js
       - ./.env:/srv/.env

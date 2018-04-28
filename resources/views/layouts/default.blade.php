@@ -30,6 +30,7 @@
         </div>
     </div>
 @show
+<div id="socketio-port" class="hidden">{{ 'http://' . request()->getHost() . ':6001' }}</div>
 <script data-main="{{ elixir('dist/js/main.js') }}" src="{{ elixir('dist/js/require.js') }}"></script>
 @include('includes.modal')
 </body>

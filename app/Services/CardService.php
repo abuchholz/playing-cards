@@ -7,19 +7,20 @@ use Illuminate\Cache\Repository;
 
 class CardService
 {
-    protected $redis;
+    protected $cache;
 
-    public function __construct(Repository $redis)
+    public function __construct(Repository $cache)
     {
-        $this->redis = $redis;
+        $this->cache = $cache;
     }
 
     public function shuffle()
     {
         $ids = range(1, 52);
         shuffle($ids);
+        \Log::debug('shuffling');
 
-        $this->redis->forever('cards_ids', json_encode($ids));
+        $this->cache->forever('cards_ids', json_encode($ids));
     }
     
     /**
@@ -27,10 +28,12 @@ class CardService
      */
     public function dealOneCard()
     {
+
+        \Log::debug('Dealing one card');
         $ids = $this->getIds();
         $id = array_pop($ids);
 
-        $this->redis->forever('cards_ids', json_encode($ids));
+        $this->cache->forever('cards_ids', json_encode($ids));
 
         $card = Card::find($id);
         \Log::debug($id);
@@ -41,7 +44,7 @@ class CardService
 
     public function getIds()
     {
-        return json_decode($this->redis->get('cards_ids'));
+        return json_decode($this->cache->get('cards_ids'));
     }
 
 

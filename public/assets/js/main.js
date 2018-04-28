@@ -22,8 +22,8 @@ requirejs(['jquery', 'socketio', 'deck', 'bootstrap'], function ($, io) {
     $(document).ready(function () {
         $('#startModal').modal('show');
 
-        // TODO pull in port number
-        var socket = io('http://cards.loc:6055');
+        var socketio_port = $('#socketio-port').html();
+        var socket = io(socketio_port);
         socket.on('connect', function (socket) {
             console.log('Socket IO: Connection with server made!');
         });
@@ -83,7 +83,6 @@ requirejs(['jquery', 'socketio', 'deck', 'bootstrap'], function ($, io) {
 
         });
     };
-
     var order = function order(deck, $card_div, _order) {
         var div_position = $card_div.position();
         var arrayLength = _order.length;

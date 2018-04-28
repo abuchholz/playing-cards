@@ -2,6 +2,7 @@
 class_name: FunctionalTester
 modules:
     enabled:
+        - Asserts
         - Laravel5:
             url: 'http://%TEST_DOMAIN%:80'
         - \Helper\Functional
