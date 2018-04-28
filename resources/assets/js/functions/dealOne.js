@@ -5,10 +5,10 @@ define([], function () {
             console.log('Dealing card (should match log): ' + data_card_index)
             var card = deck.cards[data_card_index-1];
             card.animateTo({
-                delay:    500,
+                delay:    100,
                 duration: 300,
                 ease:     'quartOut',
-                x:        div_position.left + width * .25 + num_cards_pulled * 10,
+                x:        div_position.left + width * .25 + num_cards_pulled * 15,
                 y:        div_position.top + (num_cards_pulled * 10) % 100,
 
                 onStart:    function () {
@@ -20,6 +20,8 @@ define([], function () {
                 }(card, num_cards_pulled)
 
             });
+
+            return num_cards_pulled;
         }
     }
 );
