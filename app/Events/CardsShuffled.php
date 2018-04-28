@@ -15,7 +15,7 @@ class CardsShuffled extends Event implements ShouldBroadcast
     /**
      * CardsShuffled constructor.
      *
-     * @param $cardIds
+     * @param array $cardIds
      */
     public function __construct($cardIds)
     {

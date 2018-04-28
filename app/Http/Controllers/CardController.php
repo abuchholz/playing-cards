@@ -23,7 +23,7 @@ class CardController extends Controller
     public function shuffle(CardService $cs)
     {
         $cs->shuffle();
-        event(new CardsShuffled($cs->getIds()));
+        event(new CardsShuffled($cs->getCardIdsInCache()));
     }
 
 }

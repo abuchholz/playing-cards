@@ -12,11 +12,11 @@ class CardCest
 
         /** @var CardService $cs */
         $cs = $I->grabService(CardService::class);
-        $order = $cs->getIds();
+        $order = $cs->getCardIdsInCache();
         $I->assertEquals(52, count($order));
 
         $I->sendAjaxPostRequest('/shuffle');
-        $new_order = $cs->getIds();
+        $new_order = $cs->getCardIdsInCache();
         $I->seeNotEquals($order, $new_order);
         $I->assertEquals(52, count($new_order));
     }
@@ -27,16 +27,16 @@ class CardCest
 
         /** @var CardService $cs */
         $cs = $I->grabService(CardService::class);
-        $order = $cs->getIds();
+        $order = $cs->getCardIdsInCache();
         $I->assertEquals(52, count($order));
 
         $I->sendAjaxPostRequest('/deal-one-card');
-        $new_order = $cs->getIds();
+        $new_order = $cs->getCardIdsInCache();
         $I->seeNotEquals($order, $new_order);
         $I->assertEquals(51, count($new_order));
 
         $I->sendAjaxPostRequest('/deal-one-card');
-        $last_order = $cs->getIds();
+        $last_order = $cs->getCardIdsInCache();
         $I->assertEquals(50, count($last_order));
     }
 

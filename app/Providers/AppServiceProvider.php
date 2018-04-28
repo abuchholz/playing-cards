@@ -18,7 +18,7 @@ class AppServiceProvider extends ServiceProvider
     public function register()
     {
         $this->app->bind(CardService::class, function(){
-            return new CardService(cache()->store('redis'));
+            return new CardService(cache()->store());
         });
     }
 

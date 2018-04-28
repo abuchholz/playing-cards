@@ -24,29 +24,13 @@ redis.subscribe('deal-one-card', function(err, count) {
 });
 
 redis.on('message', function(channel, message) {
-    console.log('Channel: ' + channel);
     message = JSON.parse(message);
-    console.log('Event received: ' + message.event);
-    console.log('Data recieved: ' + message.data);
-    io.emit(channel + ':' + message.event, message.data);
-});
-redis.on('pmessage', function(pattern, channel, message) {
     console.log('Channel: ' + channel);
-    message = JSON.parse(message);
     console.log('Event received: ' + message.event);
     console.log('Data recieved: ' + message.data);
     io.emit(channel + ':' + message.event, message.data);
 });
 
-
-/**
- * Helper function to return ASCII code of character
- * @param  [string] string
- * @return [ascii code]
- */
-function ord( string ) {
-    return string.charCodeAt( 0 );
-}
 function handler(req, res) {
     res.writeHead(200);
     res.end('');

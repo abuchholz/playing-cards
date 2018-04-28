@@ -16,11 +16,19 @@ class CardService
 
     public function shuffle()
     {
-        $ids = range(1, 52);
-        shuffle($ids);
-        \Log::debug('shuffling');
+        $cardIds = $this->getAllCardIds();
+        $count = count($cardIds);
 
-        $this->cache->forever('cards_ids', json_encode($ids));
+        // Fisher Yates @ O(n)
+        for ($i=$count-1; $i>0; $i--) {
+            $j = random_int(0, $i);
+
+            $temp = $cardIds[$i];
+            $cardIds[$i] = $cardIds[$j];
+            $cardIds[$j] = $temp;
+        }
+
+        $this->storeCardIdsInCache($cardIds);
     }
     
     /**
@@ -28,23 +36,29 @@ class CardService
      */
     public function dealOneCard()
     {
-
-        \Log::debug('Dealing one card');
-        $ids = $this->getIds();
-        $id = array_pop($ids);
-
-        $this->cache->forever('cards_ids', json_encode($ids));
-
+        $cardIds = $this->getCardIdsInCache();
+        $id = array_pop($cardIds);
         $card = Card::find($id);
-        \Log::debug($id);
+
+        $this->storeCardIdsInCache($cardIds);
 
         return $card;
     }
 
 
-    public function getIds()
+    public function getAllCardIds()
+    {
+        return Card::all()->pluck('id')->toArray();
+    }
+
+    public function getCardIdsInCache()
     {
         return json_decode($this->cache->get('cards_ids'));
+    }
+
+    public function storeCardIdsInCache($cardIds)
+    {
+        $this->cache->forever('cards_ids', json_encode($cardIds));
     }
 
 

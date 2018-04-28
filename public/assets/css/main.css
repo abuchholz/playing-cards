@@ -2526,7 +2526,8 @@ html, body {
 .felt {
   background: url("/assets/images/felt.jpg");
   background-size: cover;
-  height: 100%; }
+  height: 100%;
+  min-height: 800px; }
 
 .card {
   position: absolute;
