@@ -1,5 +1,5 @@
 define([], function () {
-        return function () {
+        return function (deck, $card_div) {
             var div_position = $card_div.position();
             var width = $card_div.width();
             var height = $card_div.height();
@@ -8,11 +8,11 @@ define([], function () {
                 var card = deck.cards[i];
                 card.setSide('front');
                 card.animateTo({
-                    delay: 1000 + i * 2,
+                    delay:    1000 + i * 2,
                     duration: 500,
-                    ease: 'quartOut',
+                    ease:     'quartOut',
 
-                    x: div_position.left + (Math.random() * width)-50,
+                    x: div_position.left + (Math.random() * width) - 50,
                     y: div_position.top + (Math.random() * height)
                 })
             }

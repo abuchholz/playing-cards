@@ -14,6 +14,9 @@ class CardService
         $this->cache = $cache;
     }
 
+    /**
+     * Shuffles the deck using Fisher Yates and stores IDs in cache
+     */
     public function shuffle()
     {
         $cardIds = $this->getAllCardIds();
@@ -27,18 +30,22 @@ class CardService
             $cardIds[$i] = $cardIds[$j];
             $cardIds[$j] = $temp;
         }
-
+        \Log::debug($cardIds);
         $this->storeCardIdsInCache($cardIds);
     }
     
     /**
+     * Deals one card off the top of the deck
+     *
      * @return Card
      */
     public function dealOneCard()
     {
         $cardIds = $this->getCardIdsInCache();
-        $id = array_pop($cardIds);
+        $id = array_shift($cardIds);
+        /** @var Card $card */
         $card = Card::find($id);
+        \Log::debug($card->id . ': ' . $card->readable);
 
         $this->storeCardIdsInCache($cardIds);
 

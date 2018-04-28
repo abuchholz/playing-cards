@@ -1,10 +1,14 @@
 'use strict';
 
 define([], function () {
-    return function (deck, $card_div, index, num_cards_pulled) {
+    return function (deck, $card_div, cardPosition, num_cards_pulled) {
         var div_position = $card_div.position();
         var width = $card_div.width();
-        var card = deck.cards[index];
+
+        var cardDiv = $('*[data-card-position="' + cardPosition + '"]');
+        var index = cardDiv.data('index');
+
+        var card = deck.cards[cardPosition];
         card.animateTo({
             delay: 500,
             duration: 300,
@@ -17,9 +21,7 @@ define([], function () {
             })(card),
             onComplete: (function () {
                 card.setSide('front');
-                console.log(card);
                 num_cards_pulled++;
-                console.log(num_cards_pulled);
             })(card, num_cards_pulled)
 
         });

@@ -1,7 +1,7 @@
 'use strict';
 
 define([], function () {
-    return function () {
+    return function (deck, $card_div) {
         var div_position = $card_div.position();
         var width = $card_div.width();
         var height = $card_div.height();

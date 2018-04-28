@@ -1,7 +1,9 @@
 requirejs.config({
     paths: {
         vendor: 'vendor',
-        functions: 'functions',
+        scatter: 'functions/scatter',
+        order: 'functions/order',
+        dealOne: 'functions/dealOne',
         jquery: 'vendor/jquery',
         deck: 'vendor/deck',
         socketio: 'vendor/socket.io',
@@ -41,7 +43,7 @@ requirejs(['jquery', 'socketio', 'scatter', 'order', 'dealOne', 'deck', 'bootstr
 
             $('#shuffle').click(function () {
                 $('.btn').attr("disabled", true);
-                $.post('/shuffle')
+                $.post('/shuffle');
                 num_cards_pulled = 0;
             });
             $('#deal-one-card').click(function () {
@@ -59,7 +61,7 @@ requirejs(['jquery', 'socketio', 'scatter', 'order', 'dealOne', 'deck', 'bootstr
                 order(deck, $card_div, result.order);
             });
             socket.on("deal-one-card:App\\Events\\OneCardDealt", function (result) {
-                dealOne(deck, $card_div, result.card.id-1, num_cards_pulled)
+                dealOne(deck, $card_div, result.card.id, num_cards_pulled)
             });
 
         });
