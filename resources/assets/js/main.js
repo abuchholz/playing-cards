@@ -61,7 +61,7 @@ requirejs(['jquery', 'socketio', 'scatter', 'order', 'dealOne', 'deck', 'bootstr
                 order(deck, $card_div, result.order);
             });
             socket.on("deal-one-card:App\\Events\\OneCardDealt", function (result) {
-                num_cards_pulled = dealOne(deck, $card_div, result.card.id, num_cards_pulled)
+                dealOne(deck, $card_div, result.card.id)
             });
 
         });

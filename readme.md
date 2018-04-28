@@ -20,7 +20,14 @@ Simple card shuffling and dealing app.
 
 ## Tests
 
-Once the site is configured run test suite to make sure everything is working: `ant tests` 
+Once the site is configured run test suite to make sure everything is working: `ant tests`
+
+## TODOs
+
+* Probably move shuffle and deal calls into ajax and remove socket functionality. Fancy, but laggy
+* Add JavaScript tests
+* Add callback functionality to listeners. Maybe add some 
+* Add ability to play an actual game, like blackjack  
 
 ## Shout Outs
 
