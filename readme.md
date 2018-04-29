@@ -1,4 +1,4 @@
-## Alex's Deck of Cards
+## Alex's Deck of Cards App
 
 ## Key Features
 
