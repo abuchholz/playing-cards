@@ -18,6 +18,7 @@ define(['jquery'], function ($) {
                 card.$el.style.zIndex = 100 + orderInDeck;
             })(card),
             onComplete: (function () {
+                $('#deal-one-card').attr("disabled", false);
                 card.setSide('front');
             })(card)
 

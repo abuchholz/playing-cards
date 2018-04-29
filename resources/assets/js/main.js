@@ -49,6 +49,7 @@ requirejs(['jquery', 'socketio', 'scatter', 'order', 'dealOne', 'dealAll', 'noMo
                 num_cards_pulled = 0;
             });
             $('#deal-one-card').click(function () {
+                $('#deal-one-card').attr("disabled", true);
                 $.post('/deal-one-card')
             });
             $('#deal-all').click(function () {

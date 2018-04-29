@@ -2,7 +2,9 @@
 
 ## Basic Info 
 
-Simple card shuffling and dealing app. 
+Simple card shuffling and dealing app.
+ 
+![Screen Shot](https://abuchholz.github.io/playing-cards/public/assets/images/screenshot.png)
 
 ## Dependencies
 * Ant 1.9 or higher
