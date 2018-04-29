@@ -6,6 +6,7 @@ requirejs.config({
         scatter: 'functions/scatter',
         order: 'functions/order',
         dealOne: 'functions/dealOne',
+        dealAll: 'functions/dealAll',
         jquery: 'vendor/jquery',
         deck: 'vendor/deck',
         socketio: 'vendor/socket.io',
@@ -19,7 +20,7 @@ requirejs.config({
     }
 });
 
-requirejs(['jquery', 'socketio', 'scatter', 'order', 'dealOne', 'deck', 'bootstrap'], function ($, io, scatter, order, dealOne) {
+requirejs(['jquery', 'socketio', 'scatter', 'order', 'dealOne', 'dealAll', 'deck', 'bootstrap'], function ($, io, scatter, order, dealOne, dealAll) {
     var num_cards_pulled = 0;
 
     $(document).ready(function () {
@@ -48,6 +49,9 @@ requirejs(['jquery', 'socketio', 'scatter', 'order', 'dealOne', 'deck', 'bootstr
         });
         $('#deal-one-card').click(function () {
             $.post('/deal-one-card');
+        });
+        $('#deal-all').click(function () {
+            dealAll(deck, $card_div);
         });
 
         $('#scatter').click(function () {

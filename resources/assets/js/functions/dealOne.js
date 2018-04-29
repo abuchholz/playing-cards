@@ -4,7 +4,6 @@ define(['jquery'], function ($) {
             var width = $card_div.width();
             var card = deck.cards[data_card_index - 1];
             var orderInDeck = $(card.$el).attr('data-order-in-deck');
-            console.log(orderInDeck);
 
             card.animateTo({
                 delay:    100,

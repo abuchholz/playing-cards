@@ -29,4 +29,10 @@ class OneCardDealt extends Event implements ShouldBroadcast
         return ['deal-one-card'];
     }
 
+
+    public function failed($exception)
+    {
+        dd('in here!');
+    }
+
 }
