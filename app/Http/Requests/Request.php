@@ -16,12 +16,4 @@ abstract class Request extends FormRequest
         return true;
     }
 
-    public function messages()
-    {
-        return [
-            '*.required'        => 'The :attribute field is required',
-            '*.unique'          => 'The :attribute field needs to be unique',
-            '*.are_valid_rules' => 'Must be pipe separated set of Laravel validation rules',
-        ];
-    }
 }

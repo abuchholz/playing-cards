@@ -41,7 +41,11 @@ Simple card shuffling and dealing app.
 
 ## Tests
 
-Once the site is configured run test suite to make sure everything is working: `ant tests`
+Once the site is configured run test suite to make sure everything is working: 
+
+    `ant tests`
+    
+Code coverage can be found here: `/tests/_output/coverage/index.html`
 
 ## TODOs
 
