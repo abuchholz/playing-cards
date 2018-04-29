@@ -1,12 +1,11 @@
 ## Alex's Deck of Cards App
 
-## Key Features
-
 Playing card shuffling and dealing app.
- 
+
 ![Screen Shot](https://abuchholz.github.io/playing-cards/public/assets/images/screenshot.png)
 
-####Features
+## Key Features 
+
 * **Shuffle**: reorders the deck of cards and stacks the on the left
 * **Deal one card**: deals one card off the top of the deck
 * **Deal all cards**: deals all the cards left in the deck at once
