@@ -40,5 +40,16 @@ class CardCest
         $I->assertEquals(50, count($last_order));
     }
 
+    public function dealAllSuccessfully(FunctionalTester $I)
+    {
+        $I->sendAjaxPostRequest('/deal-all');
+
+        /** @var CardService $cs */
+        $cs = $I->grabService(CardService::class);
+        $cardsInCache = $cs->getCardIdsInCache();
+
+        $I->assertEquals(0, $cardsInCache);
+    }
+
 
 }
