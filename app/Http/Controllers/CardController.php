@@ -22,7 +22,7 @@ class CardController extends Controller
             event(new NoMoreCards());
         }
     }
-    
+
     /**
      * @param CardService $cs
      */

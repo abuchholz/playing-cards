@@ -42,20 +42,28 @@ class CardServiceTest extends Test
         $cs->shuffle();
         $idsInCache = $cs->getCardIdsInCache();
 
-        $idsDealt = [];
+        $cardIdsDealt = [];
         for ($i = 0; $i < 52; $i++) {
-            /** @var Card $cardDealt */
-            $cardDealt = $cs->dealOneCard();
-            $idsDealt[] = $cardDealt->id;
+            $cardIdsDealt[] = $cs->dealOneCard();
         }
 
         $this->assertEmpty($cs->getCardIdsInCache());
 
         for ($i = 0; $i < 52; $i++) {
-            $this->assertContains($idsInCache[$i], $idsDealt);
+            $this->assertContains($idsInCache[$i], $cardIdsDealt);
         }
         $this->expectException(NoMoreCards::class);
         $cs->dealOneCard();
 
     }
+
+    public function testDealAll()
+    {
+        $cs = new CardService(cache()->store());
+        $cs->shuffle();
+        $cs->dealAll();
+
+        $this->assertEmpty($cs->getCardIdsInCache());
+    }
+
 }

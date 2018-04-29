@@ -2436,6 +2436,12 @@ th {
 html, body {
   height: 100%; }
 
+.alert {
+  border-radius: 0;
+  text-align: center;
+  font-size: 18px;
+  padding: 5px; }
+
 .button-bar {
   background-color: rgba(0, 155, 0, 0.5);
   padding: 10px 0; }
@@ -2743,7 +2749,7 @@ html, body {
 
 #home {
   padding: 100px;
-  margin-top: 100px; }
+  margin-top: 20px; }
   #home #cards {
     height: 350px; }
 

@@ -57,11 +57,10 @@
         <run container="node" workdir="/var/www" line="bash -c 'yarn'"/>
     </target>
     <target name="gulp">
-        <echo message="Yarn installing npm packages"/>
+        <echo message="Running Gulp"/>
         <run container="node" workdir="/var/www" line="bash -c 'gulp'"/>
     </target>
     <target name="gulp-watch">
-        <echo message="Yarn installing npm packages"/>
         <run container="node" workdir="/var/www" line="bash -c 'gulp watch'"/>
     </target>
     <target name="generate-key">

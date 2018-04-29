@@ -37,7 +37,7 @@ class CardService
     /**
      * Deals one card off the top of the deck
      *
-     * @return integer
+     * @return integer $cardId
      * @throws NoMoreCardsException
      */
     public function dealOneCard()
@@ -46,10 +46,10 @@ class CardService
         if (empty($cardIds)) {
             throw new NoMoreCardsException();
         }
-        $id = array_shift($cardIds);
+        $cardId = array_shift($cardIds);
         $this->storeCardIdsInCache($cardIds);
 
-        return $id;
+        return $cardId;
     }
 
     /**
