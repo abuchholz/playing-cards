@@ -1,4 +1,4 @@
-## Alex's Playing Cards App
+## Alex's Deck of Cards
 
 ## Key Features
 
