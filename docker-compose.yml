@@ -88,6 +88,8 @@ services:
       - "4444"
     volumes_from:
       - volumes_source
+    links:
+      - socketio
     networks:
       local:
         aliases:
@@ -111,7 +113,6 @@ services:
     restart: always
     links:
       - redis
-      - selenium
     ports:
       - "6001:6001"
     volumes:
@@ -120,7 +121,9 @@ services:
       - ./node_modules:/srv/node_modules
       - ./docker/logs/socketio:/srv/logs
     networks:
-      - local
+      local:
+        aliases:
+          - socketio
 
 ### Laravel Application Code Container ######################
 
