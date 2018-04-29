@@ -26,7 +26,7 @@ Playing card shuffling and dealing app.
 
    `cp .env.example .env; cp .env.testing.example .env.testing;`
 
-2. Fill in all variables other than `APP_KEY`. That will be set automatically.
+2. Fill in all variables other than `APP_KEY`. `APP_KEY` will be set automatically during a later step.
    - Make sure to set all port variables with unused ports on your machine. There are examples set for you but those might be in use. Docker will fail to boot if that is the case. Just change the ports and it should work fine.
 3. Build and run docker containers. Note that this might take a few minutes if this is the first time you are downloading and running the containers utilized in this project: 
 
@@ -43,6 +43,7 @@ Playing card shuffling and dealing app.
 
  
     `ant docker-reboot`
+    
     
 7. To access the site replace your .env values in `http://SITE_DOMAIN:CONTAINER_NGINX_PORT_80X`, e.g. `http://cards.loc:801`
 8. Once you are done checking out the app, let's shut everything down. You can run `ant docker-boot` to start things back up!
@@ -61,7 +62,7 @@ Code coverage can be found here: `/tests/_output/coverage/index.html`
 
 ## TODOs
 
-* Fix Acceptance Test
+* Fix Acceptance Tests - there is an issue with the selenium container talking to the socket.io container
 * Finish two player game that takes advantage of sockets, like blackjack
 * Add JavaScript tests
 * Add callback functionality to listeners. 
