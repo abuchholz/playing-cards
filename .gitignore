@@ -17,5 +17,6 @@ tests/_support/_generated
 tests/screenshots
 npm-debug.log
 node_modules
+bower_components
 .ant-targets-build.xml
 !**/*/.gitkeep
