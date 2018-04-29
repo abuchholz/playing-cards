@@ -41,6 +41,10 @@
             <arg value="-d"/>
         </exec>
     </target>
+    <target name="docker-reboot">
+        <antcall target="docker-down"/>
+        <antcall target="docker-boot"/>
+    </target>
 
 
     <target name="composer">
