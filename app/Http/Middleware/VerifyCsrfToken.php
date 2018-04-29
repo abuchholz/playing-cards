@@ -13,6 +13,7 @@ class VerifyCsrfToken extends BaseVerifier
      */
     protected $except = [
         '/shuffle',
-        '/deal-one-card'
+        '/deal-one-card',
+        '/deal-all'
     ];
 }

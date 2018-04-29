@@ -8,7 +8,6 @@ app.listen(6001, function() {
     console.log('Socket.io: Listening on 6001');
 });
 
-
 io.on('connection', function(socket) {
     console.log('Connection with browser made');
     socket.on('disconnect', function() {
@@ -16,12 +15,9 @@ io.on('connection', function(socket) {
     });
 });
 
-redis.subscribe('shuffle', function(err, count) {
-    console.log('Redis: shuffle subscribed');
-});
-redis.subscribe('deal-one-card', function(err, count) {
-    console.log('Redis: deal one card subscribed');
-});
+redis.subscribe('shuffle');
+redis.subscribe('deal-one-card');
+redis.subscribe('no-more-cards');
 
 redis.on('message', function(channel, message) {
     message = JSON.parse(message);

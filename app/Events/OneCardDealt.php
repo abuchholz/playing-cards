@@ -2,7 +2,6 @@
 
 namespace App\Events;
 
-use App\Card;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 
@@ -10,18 +9,19 @@ class OneCardDealt extends Event implements ShouldBroadcast
 {
     use SerializesModels;
 
-    /** @var $card Card */
-    public $card;
+    /**
+     * @var int $cardId
+     */
+    public $cardId;
 
     /**
      * OneCardDealt constructor.
      *
-     * @param Card $card
+     * @param integer $cardId
      */
-    public function __construct(Card $card)
+    public function __construct($cardId)
     {
-        $this->card = $card;
-        // TODO: what happens when there are no cards left??
+        $this->cardId = $cardId;
     }
 
     public function broadcastOn()
@@ -29,10 +29,5 @@ class OneCardDealt extends Event implements ShouldBroadcast
         return ['deal-one-card'];
     }
 
-
-    public function failed($exception)
-    {
-        dd('in here!');
-    }
 
 }

@@ -6,6 +6,7 @@ requirejs.config({
         scatter: 'functions/scatter',
         order: 'functions/order',
         dealOne: 'functions/dealOne',
+        noMoreCards: 'functions/noMoreCards',
         dealAll: 'functions/dealAll',
         jquery: 'vendor/jquery',
         deck: 'vendor/deck',
@@ -20,7 +21,7 @@ requirejs.config({
     }
 });
 
-requirejs(['jquery', 'socketio', 'scatter', 'order', 'dealOne', 'dealAll', 'deck', 'bootstrap'], function ($, io, scatter, order, dealOne, dealAll) {
+requirejs(['jquery', 'socketio', 'scatter', 'order', 'dealOne', 'dealAll', 'noMoreCards', 'deck', 'bootstrap'], function ($, io, scatter, order, dealOne, dealAll, noMoreCards) {
     var num_cards_pulled = 0;
 
     $(document).ready(function () {
@@ -64,7 +65,11 @@ requirejs(['jquery', 'socketio', 'scatter', 'order', 'dealOne', 'dealAll', 'deck
             order(deck, $card_div, result.order);
         });
         socket.on("deal-one-card:App\\Events\\OneCardDealt", function (result) {
-            dealOne(deck, $card_div, result.card.id);
+            console.log(result.cardId);
+            dealOne(deck, $card_div, result.cardId);
+        });
+        socket.on("no-more-cards:App\\Events\\NoMoreCards", function () {
+            noMoreCards();
         });
     });
 });

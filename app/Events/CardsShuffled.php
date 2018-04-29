@@ -2,8 +2,8 @@
 
 namespace App\Events;
 
-use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 
 class CardsShuffled extends Event implements ShouldBroadcast
 {

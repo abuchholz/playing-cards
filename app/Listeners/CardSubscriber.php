@@ -3,25 +3,12 @@
 namespace App\Listeners;
 
 use App\Events\CardsShuffled;
-use App\Services\CardService;
+use App\Events\NoMoreCards;
 use App\Events\OneCardDealt;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
 class CardSubscriber implements ShouldQueue
 {
-
-    protected $cs;
-
-    /**
-     * Shuffle constructor.
-     *
-     * @param CardService $cs
-     */
-    public function __construct(CardService $cs)
-    {
-        $this->cs = $cs;
-
-    }
 
     public function shuffle(CardsShuffled $event)
     {
@@ -31,6 +18,11 @@ class CardSubscriber implements ShouldQueue
     public function oneCardDealt(OneCardDealt $event)
     {
         // TODO: What now? We've dealt a card...
+    }
+
+    public function noMoreCards(NoMoreCards $event)
+    {
+        // TODO: What now? We don't have any cards left...
     }
 
 
@@ -47,6 +39,11 @@ class CardSubscriber implements ShouldQueue
         $events->listen(
             OneCardDealt::class,
             'App\Listeners\CardSubscriber@oneCardDealt'
+        );
+
+        $events->listen(
+            NoMoreCards::class,
+            'App\Listeners\CardSubscriber@noMoreCards'
         );
     }
 

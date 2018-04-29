@@ -19,6 +19,7 @@ define([], function () {
 
             $('.btn').attr("disabled", false);
             $('#deal-one-card').attr("disabled", true);
+            $('#deal-all').attr("disabled", true);
         }
     }
 );

@@ -24,21 +24,20 @@ class CardService
         $count = count($cardIds);
 
         // Fisher Yates @ O(n)
-        for ($i=$count-1; $i>0; $i--) {
+        for ($i = $count - 1; $i > 0; $i--) {
             $j = random_int(0, $i);
 
             $temp = $cardIds[$i];
             $cardIds[$i] = $cardIds[$j];
             $cardIds[$j] = $temp;
         }
-        \Log::debug($cardIds);
         $this->storeCardIdsInCache($cardIds);
     }
 
     /**
      * Deals one card off the top of the deck
      *
-     * @return Card
+     * @return integer
      * @throws NoMoreCardsException
      */
     public function dealOneCard()
@@ -48,29 +47,41 @@ class CardService
             throw new NoMoreCardsException();
         }
         $id = array_shift($cardIds);
-        $card = Card::find($id);
-
         $this->storeCardIdsInCache($cardIds);
 
-        return $card;
+        return $id;
     }
 
+    /**
+     * Empty's the rest of the card cache
+     */
+    public function dealAll()
+    {
+        $this->cache->forget('cards_ids');
+    }
 
+    /**
+     * @return array
+     */
     public function getAllCardIds()
     {
         return Card::all()->pluck('id')->toArray();
     }
 
+    /**
+     * @return array
+     */
     public function getCardIdsInCache()
     {
         return json_decode($this->cache->get('cards_ids'));
     }
 
+    /**
+     * @param array $cardIds
+     */
     public function storeCardIdsInCache($cardIds)
     {
         $this->cache->forever('cards_ids', json_encode($cardIds));
     }
-
-
 
 }
